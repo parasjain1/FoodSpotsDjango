@@ -9,6 +9,7 @@ from django.conf.urls.static import static
 apiRouter = routers.DefaultRouter()
 apiRouter.register(r'users', api_views.UserViewSet)
 apiRouter.register(r'foodspots/vote', api_views.FoodSpotVoteViewSet)
+apiRouter.register(r'foodspots/comment', api_views.FoodSpotCommentViewSet)
 apiRouter.register(r'foodspots', api_views.FoodSpotViewSet)
 apiRouter.register(r'tweepy', tweepyViews.TweepyViewSet, base_name="tweepy")
 

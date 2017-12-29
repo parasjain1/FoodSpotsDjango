@@ -56,7 +56,8 @@ class FoodSpotCommentSerializer(serializers.ModelSerializer):
 	created_date_time = serializers.SerializerMethodField()
 	class Meta:
 		model = FoodSpotComment
-		exclude = ('foodSpot')
+		read_only = ('owner')
+		extra_kwargs = {'text' : {'required' : True}, 'foodSpot' : {'required' : True} }
 	def get_created_date_time(self, instance):
 		return timezone.localtime(instance.timestamp)
 
@@ -64,8 +65,8 @@ class FoodSpotVoteSerializer(serializers.ModelSerializer):
 	# created_date_time = serializers.SerializerMethodField()
 	class Meta:
 		model = FoodSpotVote
-		exclude = ('foodSpot',)
 		read_only = ('owner', 'value')
+		extra_kwargs = {'value' : {'required' : True}, 'foodSpot' : {'required' : True}, 'owner' : {'required' : False} }
 	# def get_created_date_time(self, instance):
 	# 	print instance
 	# 	return timezone.localtime(instance.timestamp)
@@ -91,8 +92,8 @@ class FoodSpotSerializer(serializers.ModelSerializer):
 	created_date_time = serializers.SerializerMethodField()
 	class Meta:
 		model = FoodSpot
-		exclude = ('owner',)
 		read_only = ('location', 'approved')
+		extra_kwargs = { 'owner' : {'read_only' : True}}
 
 	'''
 	 fill_gallery : method to fill gallery field during GET request
@@ -102,10 +103,10 @@ class FoodSpotSerializer(serializers.ModelSerializer):
 		return [FoodSpotImageSerializer(foodSpotImage).data for foodSpotImage in instance.gallery.all()]
 
 	def get_recentLikes(self, instance):
-		return [FoodSpotVote(foodSpotVote).data for foodSpotVote in instance.votes.filter(value = 1).order_by('-id')]
+		return [FoodSpotVoteSerializer(foodSpotVote).data for foodSpotVote in instance.votes.filter(value = 1).order_by('-id')]
 
 	def get_recentDislikes(self, instance):
-		return [FoodSpotVote(foodSpotVote).data for foodSpotVote in instance.votes.filter(value = -1).order_by('-id')]
+		return [FoodSpotVoteSerializer(foodSpotVote).data for foodSpotVote in instance.votes.filter(value = -1).order_by('-id')]
 
 	def get_numLikes(self, instance):
 		return instance.votes.filter(value = 1).count()
@@ -114,7 +115,7 @@ class FoodSpotSerializer(serializers.ModelSerializer):
 		return instance.votes.filter(value = -1).count()
 
 	def get_comments(self, instance):
-		return [FoodSpotComment(foodSpotComment).data for foodSpotComment in instance.comments.order_by('-id')]
+		return [FoodSpotCommentSerializer(foodSpotComment).data for foodSpotComment in instance.comments.order_by('-id')]
 
 	def get_created_date_time(self, instance):
 		return timezone.localtime(instance.timestamp)

@@ -68,17 +68,20 @@ class FoodSpotImage(models.Model):
 
 
 class FoodSpotVote(models.Model):
+	class Meta:
+		unique_together = ('owner', 'foodSpot')
+
 	choices = (
 		(-1, 'Dislike'),
 		(1, 'Like'))
 	value = models.SmallIntegerField(choices = choices, blank = True)
-	owner = models.ForeignKey(settings.AUTH_USER_MODEL, blank = True)
+	owner = models.ForeignKey(settings.AUTH_USER_MODEL, blank = True, default=User.objects.get(pk=1))
 	foodSpot = models.ForeignKey('FoodSpot', related_name='votes', blank = True)
 	timestamp = models.DateTimeField(default = timezone.now, editable = False)
 
 class FoodSpotComment(models.Model):
 	text = models.CharField(max_length=1000)
-	owner = models.ForeignKey(settings.AUTH_USER_MODEL)
+	owner = models.ForeignKey(settings.AUTH_USER_MODEL, blank = True, default=User.objects.get(pk=1))
 	foodSpot = models.ForeignKey('FoodSpot', related_name='comments')	
 	timestamp = models.DateTimeField(default = timezone.now, editable = False)
 

@@ -13,7 +13,8 @@ from serializers import (
 		FoodSpotSerializer, 
 		UserSerializerForPut, 
 		UserSerializerForPublicGet,
-		FoodSpotVoteSerializer
+		FoodSpotVoteSerializer,
+		FoodSpotCommentSerializer
 	)
 from models import User, Location, FoodSpot, FoodSpotVote, FoodSpotComment
 from permissions import IsCreationOrIsAuthenticated, IsAuthenticated, IsOwnerOrReadOnly
@@ -21,6 +22,7 @@ from rest_framework.response import Response
 from rest_framework.decorators import detail_route, list_route
 from rest_framework.authtoken.models import Token
 from rest_framework.exceptions import ValidationError
+from django.utils.translation import ugettext as _
 
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -91,47 +93,21 @@ class FoodSpotViewSet(viewsets.ModelViewSet):
 		serializer = self.get_serializer(foodspots, many=True)
 		return Response(serializer.data)
 
-	# @list_route(methods=['post'])
-	# """
-	# 	foodSpotId - Id of the foodspot on which comment is to be added
-	# """
-	# def addComment(self, request):
-
-	# 	pk = request.POST.get("foodSpotId", None)
-
-
 
 class FoodSpotVoteViewSet(viewsets.ModelViewSet):
  	queryset = FoodSpotVote.objects.all()
  	serializer_class = FoodSpotVoteSerializer
  	permission_classes = (IsAuthenticated, IsOwnerOrReadOnly,)
 
-	def create(self, request, *args, **kwargs):
-		serializer = self.get_serializer(data=request.data)
-		serializer.is_valid(raise_exception=True)
-		try:
-			self.perform_create(serializer)
-		except ValidationError as e:
-			raise ValidationError(e.messages)
-		self.perform_create(serializer)
-		headers = self.get_success_headers(serializer.data)
-		return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
-		
-
  	def perform_create(self, serializer):
- 		print "hoollala"
- 		pk = self.request.POST.get('foodSpotId', None)
- 		value = self.request.POST.get('value', None)
- 		# return from here won't work...you need to override create method
- 		if pk is None:
- 			print "DFD"
- 			# return Response({'error' : 'foodSpotId is required.' }, status=status.HTTP_400_BAD_REQUEST)
-		if value is None:
- 			raise ValidationError(
- 				_('Value required: %(value)s'),
- 				params = {'value' : '42' },
- 				code='invalid',
-			)
+ 		print self.request.user.username
+ 		serializer.save(owner = self.request.user)
 
- 		serializer.save(owner = self.request.user, foodSpot = FoodSpot.objects.get(pk=pk), value = value)
+class FoodSpotCommentViewSet(viewsets.ModelViewSet):
+	queryset = FoodSpotComment.objects.all()
+	serializer_class = FoodSpotCommentSerializer
+	permission_classes = (IsAuthenticated, IsOwnerOrReadOnly,)
+
+	def perform_create(self, serializer):
+		serializer.save(owner = self.request.user)
 
