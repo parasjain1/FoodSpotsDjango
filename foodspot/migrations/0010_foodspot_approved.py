@@ -8,7 +8,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('foodspot', '0009_remove_location_point'),
+        ('foodspot', '0007_auto_20171225_1843.pyc'),
     ]
 
     operations = [
