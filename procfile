@@ -1,1 +1,1 @@
-release: python manage.py migrate\nweb: python manage.py runserver
+web: python manage.py runserver --log-file logs.txt
