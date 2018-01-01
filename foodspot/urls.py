@@ -21,7 +21,6 @@ urlpatterns = [
 	# url(r'^api/logout/', api_views.Logout.as_view()),
 	url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
 	url(r'^api/', include(apiRouter.urls)),
-	url()
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root = settings.MEDIA_ROOT)
