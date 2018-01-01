@@ -17,6 +17,7 @@ class User(AbstractUser):
 	facebookId = models.TextField(blank = True)
 	birthDate = models.DateField(blank = True, null = True)
 	credits = models.FloatField(blank = True, null = True)
+	# gender = models.BooleanField(blank = True, null = True)
 
 class LikeDislikeManager(models.Manager):
     use_for_related_fields = True
