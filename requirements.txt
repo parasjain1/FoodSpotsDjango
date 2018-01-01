@@ -4,3 +4,4 @@ djangorestframework==3.7.7
 django==1.11
 psycopg2
 MySQL-python
+django-braces
