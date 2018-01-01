@@ -1,0 +1,52 @@
+[2017-12-31 18:22:15 +0530] [2255] [INFO] Starting gunicorn 19.7.1
+[2017-12-31 18:22:15 +0530] [2255] [INFO] Listening at: http://0.0.0.0:5000 (2255)
+[2017-12-31 18:22:15 +0530] [2255] [INFO] Using worker: sync
+[2017-12-31 18:22:15 +0530] [2258] [INFO] Booting worker with pid: 2258
+[2017-12-31 18:22:15 +0530] [2258] [ERROR] Exception in worker process
+Traceback (most recent call last):
+  File "/Library/Python/2.7/site-packages/gunicorn/arbiter.py", line 578, in spawn_worker
+    worker.init_process()
+  File "/Library/Python/2.7/site-packages/gunicorn/workers/base.py", line 126, in init_process
+    self.load_wsgi()
+  File "/Library/Python/2.7/site-packages/gunicorn/workers/base.py", line 135, in load_wsgi
+    self.wsgi = self.app.wsgi()
+  File "/Library/Python/2.7/site-packages/gunicorn/app/base.py", line 67, in wsgi
+    self.callable = self.load()
+  File "/Library/Python/2.7/site-packages/gunicorn/app/wsgiapp.py", line 65, in load
+    return self.load_wsgiapp()
+  File "/Library/Python/2.7/site-packages/gunicorn/app/wsgiapp.py", line 52, in load_wsgiapp
+    return util.import_app(self.app_uri)
+  File "/Library/Python/2.7/site-packages/gunicorn/util.py", line 352, in import_app
+    __import__(module)
+  File "/users/monikapandey/desktop/heroku/fs/FoodSpotsDjango/djangoApp/wsgi.py", line 12, in <module>
+    from django.core.wsgi import get_wsgi_application
+ImportError: No module named django.core.wsgi
+[2017-12-31 18:22:15 +0530] [2258] [INFO] Worker exiting (pid: 2258)
+[2017-12-31 18:22:15 +0530] [2255] [INFO] Shutting down: Master
+[2017-12-31 18:22:15 +0530] [2255] [INFO] Reason: Worker failed to boot.
+[2017-12-31 18:22:36 +0530] [2270] [INFO] Starting gunicorn 19.7.1
+[2017-12-31 18:22:36 +0530] [2270] [INFO] Listening at: http://0.0.0.0:5000 (2270)
+[2017-12-31 18:22:36 +0530] [2270] [INFO] Using worker: sync
+[2017-12-31 18:22:36 +0530] [2273] [INFO] Booting worker with pid: 2273
+[2017-12-31 18:22:36 +0530] [2273] [ERROR] Exception in worker process
+Traceback (most recent call last):
+  File "/Library/Python/2.7/site-packages/gunicorn/arbiter.py", line 578, in spawn_worker
+    worker.init_process()
+  File "/Library/Python/2.7/site-packages/gunicorn/workers/base.py", line 126, in init_process
+    self.load_wsgi()
+  File "/Library/Python/2.7/site-packages/gunicorn/workers/base.py", line 135, in load_wsgi
+    self.wsgi = self.app.wsgi()
+  File "/Library/Python/2.7/site-packages/gunicorn/app/base.py", line 67, in wsgi
+    self.callable = self.load()
+  File "/Library/Python/2.7/site-packages/gunicorn/app/wsgiapp.py", line 65, in load
+    return self.load_wsgiapp()
+  File "/Library/Python/2.7/site-packages/gunicorn/app/wsgiapp.py", line 52, in load_wsgiapp
+    return util.import_app(self.app_uri)
+  File "/Library/Python/2.7/site-packages/gunicorn/util.py", line 352, in import_app
+    __import__(module)
+  File "/users/monikapandey/desktop/heroku/fs/FoodSpotsDjango/djangoApp/wsgi.py", line 12, in <module>
+    from django.core.wsgi import get_wsgi_application
+ImportError: No module named django.core.wsgi
+[2017-12-31 18:22:36 +0530] [2273] [INFO] Worker exiting (pid: 2273)
+[2017-12-31 18:22:36 +0530] [2270] [INFO] Shutting down: Master
+[2017-12-31 18:22:36 +0530] [2270] [INFO] Reason: Worker failed to boot.

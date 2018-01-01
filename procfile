@@ -1,0 +1,2 @@
+release: python manage.py migrate
+web: gunicorn djangoApp.wsgi --log-file logs.txt
