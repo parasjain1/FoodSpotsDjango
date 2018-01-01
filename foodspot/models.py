@@ -81,7 +81,7 @@ class FoodSpotVote(models.Model):
 
 class FoodSpotComment(models.Model):
 	text = models.CharField(max_length=1000)
-	owner = models.ForeignKey('User', blank = True, default=User.objects.get(pk=1))
+	owner = models.ForeignKey('User', blank = True)
 	foodSpot = models.ForeignKey('FoodSpot', related_name='comments')	
 	timestamp = models.DateTimeField(default = timezone.now, editable = False)
 
