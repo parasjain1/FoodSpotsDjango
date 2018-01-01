@@ -6,3 +6,4 @@ psycopg2
 MySQL-python
 django-braces
 tweepy
+textblobl
