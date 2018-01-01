@@ -7,3 +7,4 @@ MySQL-python
 django-braces
 tweepy
 textblob
+pillow
