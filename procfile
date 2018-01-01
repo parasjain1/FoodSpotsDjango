@@ -1,2 +1,1 @@
-release: python manage.py migrate
-web: gunicorn djangoApp.wsgi --log-file logs.txt
+release: python manage.py migrate\nweb: python manage.py runserver
