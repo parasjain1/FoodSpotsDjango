@@ -5,6 +5,7 @@ from django.conf import settings
 import foodspot.views as views, foodspot.api_views as api_views
 import foodspot.tweepyViews as tweepyViews
 from django.conf.urls.static import static
+from django.conf.urls.defaults import *
 
 apiRouter = routers.DefaultRouter()
 apiRouter.register(r'users', api_views.UserViewSet)
