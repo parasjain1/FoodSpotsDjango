@@ -52,7 +52,7 @@ class LocationManager(models.Manager):
 
 class Location(models.Model):
 	objects = LocationManager()
-	owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete = models.CASCADE)
+	owner = models.ForeignKey('User', on_delete = models.CASCADE)
 	lat = models.FloatField()
 	lng = models.FloatField()
 	# point = gisModels.PointField(null = True, blank = True, srid = 4326)
@@ -75,13 +75,13 @@ class FoodSpotVote(models.Model):
 		(-1, 'Dislike'),
 		(1, 'Like'))
 	value = models.SmallIntegerField(choices = choices, blank = True)
-	owner = models.ForeignKey(settings.AUTH_USER_MODEL, blank = True, default=User.objects.get(pk=1))
+	owner = models.ForeignKey('User', blank = True, default=User.objects.get(pk=1))
 	foodSpot = models.ForeignKey('FoodSpot', related_name='votes', blank = True)
 	timestamp = models.DateTimeField(default = timezone.now, editable = False)
 
 class FoodSpotComment(models.Model):
 	text = models.CharField(max_length=1000)
-	owner = models.ForeignKey(settings.AUTH_USER_MODEL, blank = True, default=User.objects.get(pk=1))
+	owner = models.ForeignKey('User', blank = True, default=User.objects.get(pk=1))
 	foodSpot = models.ForeignKey('FoodSpot', related_name='comments')	
 	timestamp = models.DateTimeField(default = timezone.now, editable = False)
 
@@ -96,7 +96,7 @@ class FoodSpotManager(models.Manager):
 
 class FoodSpot(models.Model):
 	objects = FoodSpotManager()
-	owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete = models.CASCADE)
+	owner = models.ForeignKey('User', on_delete = models.CASCADE)
 	name = models.CharField(max_length = 100)
 	rating = models.FloatField(null = True, blank = True)
 	location = models.ForeignKey('Location', on_delete = models.CASCADE)
