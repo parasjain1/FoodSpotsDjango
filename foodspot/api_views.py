@@ -16,6 +16,7 @@ from serializers import (
 		FoodSpotVoteSerializer,
 		FoodSpotCommentSerializer
 	)
+import foodspot.constants as constants
 from models import User, Location, FoodSpot, FoodSpotVote, FoodSpotComment
 from permissions import IsCreationOrIsAuthenticated, IsAuthenticated, IsOwnerOrReadOnly
 from rest_framework.response import Response
@@ -53,7 +54,7 @@ class UserViewSet(viewsets.ModelViewSet):
 class FoodSpotViewSet(viewsets.ModelViewSet):
 	queryset = FoodSpot.objects.all()
 	serializer_class = FoodSpotSerializer
-	permission_classes = (IsAuthenticated, IsOwnerOrReadOnly)
+	permission_classes = (IsOwnerOrReadOnly,)
 
 	#override perform_create method to pass current logged in user as owner of the entity
 	def perform_create(self, serializer):
@@ -72,17 +73,21 @@ class FoodSpotViewSet(viewsets.ModelViewSet):
 	 	"""
     		lat -- User latitude
     		lng -- User longitude
+    		maxDistance -- maximum distance allowed b/w user and the foodspots
     		keyword -- Search Keyword
     	""" 
 		
 		lat = request.query_params.get('lat')
 		lng = request.query_params.get('lng')
+		maxDistance = request.query_params.get('maxDistance')
+		maxDistance = maxDistance if maxDistance is not None else constants.DEFAULT_MAX_DISTANCE
+		keyword = request.query_params.get('keyword')
 		username = request.query_params.get('username')
 
 		if username is None:
 			if lat is None or lng is None:
 				return Response({ 'error' : 'lat and lng fields are both required'},status=status.HTTP_400_BAD_REQUEST)
-			foodspots = FoodSpot.objects.nearby(lat,lng,2)
+			foodspots = FoodSpot.objects.nearby(lat,lng,maxDistance)
 		else:
 			foodspots = FoodSpot.objects.filter(owner__username = username)
 

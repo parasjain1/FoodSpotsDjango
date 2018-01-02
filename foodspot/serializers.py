@@ -79,8 +79,14 @@ class FoodSpotImageSerializer(serializers.ModelSerializer):
 		model = FoodSpotImage
 		exclude = ('foodSpot', )
 
+# refer http://blog.karolmajta.com/parsing-query-parameters-in-rest-framework/
+# class FoodSpotQueryParamExpectations(serializers.Serializer):
+# 	lat = fields.FloatField()
+# 	lng = fields.FloatField()
+
 class FoodSpotSerializer(serializers.ModelSerializer):
 	location = LocationSerializer()
+	owner = UserSerializerForPublicGet()
 	# since FoodSpot doesn't have a gallery field, we define a MethodField 'gallery' and fill it via the 'fill_gallery' serializer method
 	# method name defaults to 'get_gallery' if not specified 
 	gallery = serializers.SerializerMethodField('fill_gallery')
@@ -92,6 +98,7 @@ class FoodSpotSerializer(serializers.ModelSerializer):
 	created_date_time = serializers.SerializerMethodField()
 	class Meta:
 		model = FoodSpot
+		fields = '__all__'
 		read_only = ('location', 'approved')
 		extra_kwargs = { 'owner' : {'read_only' : True}}
 

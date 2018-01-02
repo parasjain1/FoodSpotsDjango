@@ -12,6 +12,12 @@ import foodspot.constants as constants
 
 
 # Create your models here.
+
+class UserLocation(models.Model):
+	lat = models.FloatField()
+	lng = models.FloatField()
+	user = models.ForeignKey('User', related_name = 'lastLocation', unique = True)
+
 class User(AbstractUser):
 	profileImage = models.ImageField(null = True, blank = True, upload_to = helpers.PathAndRenameFile('profiles/images'))
 	facebookId = models.TextField(blank = True)
@@ -106,6 +112,8 @@ class FoodSpot(models.Model):
 	timestamp = models.DateTimeField(default = timezone.now, editable = False)
 	approved = models.BooleanField(default = False)
 	preApproved = models.BooleanField(default = False)
+	# openTime = models.
+	# closeTime = 
 
 	@staticmethod
 	def post_save(sender, **kwargs):
