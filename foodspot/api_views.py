@@ -24,6 +24,7 @@ from rest_framework.decorators import detail_route, list_route
 from rest_framework.authtoken.models import Token
 from rest_framework.exceptions import ValidationError
 from django.utils.translation import ugettext as _
+from pyfcm import FCMNotification
 
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -70,8 +71,28 @@ class FoodSpotViewSet(viewsets.ModelViewSet):
 
 	@list_route(url_path='travel')
 	def travel(self, request):
-		return self.list(request)
+		errors = {}
+		lat = request.query_params.get('lat')
+		lng = request.query_params.get('lng')
+		firebaseId = request.query_params.get('firebaseId')
+		if lat is None:
+			errors['lat'] = 'lat is required'
+		if lng is None:
+			errors['lng'] = 'lng is required'
+		if firebaseId is None:
+			errors['firebaseId'] = 'firebaseId is required'
+		if len(errors) is not 0:
+			return Response(errors,status=status.HTTP_400_BAD_REQUEST)
 
+		pushService = FCMNotification(api_key = constants.FCM_SERVER_KEY)
+		data = {
+			"title" : "Wandoof",
+			"message" : "Checkout this place nearby!",
+			"foodspot" : 1,
+			"image" : "http://c8.alamy.com/comp/CEB75Y/vans-good-food-shop-in-middleton-street-llandrindod-wells-CEB75Y.jpg"
+		}
+		result = pushService.notify_single_device(registration_id = firebaseId, data_message = data)
+		return Response({'status' : 'done' },status=status.HTTP_200_OK)
 
 	# override default 'list' APIView method to get list of FoodSpots
 	def list(self, request):
