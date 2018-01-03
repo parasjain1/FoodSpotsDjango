@@ -14,16 +14,20 @@ import foodspot.constants as constants
 # Create your models here.
 
 class UserLocation(models.Model):
+	user = models.OneToOneField('User', related_name = 'lastLocation', unique = True)
 	lat = models.FloatField()
 	lng = models.FloatField()
-	user = models.ForeignKey('User', related_name = 'lastLocation', unique = True)
+	
 
 class User(AbstractUser):
+	fullName = models.CharField(max_length = 100, default = "")
 	profileImage = models.ImageField(null = True, blank = True, upload_to = helpers.PathAndRenameFile('profiles/images'))
 	facebookId = models.TextField(blank = True)
 	birthDate = models.DateField(blank = True, null = True)
 	credits = models.FloatField(blank = True, null = True)
 	# gender = models.BooleanField(blank = True, null = True)
+	class Meta:
+		unique_together = ('email',)
 
 class LikeDislikeManager(models.Manager):
     use_for_related_fields = True

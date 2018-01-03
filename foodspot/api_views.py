@@ -68,6 +68,11 @@ class FoodSpotViewSet(viewsets.ModelViewSet):
 			queryset = queryset.filter(owner__username = username)
 		return queryset
 
+	@list_route(url_path='travel')
+	def travel(self, request):
+		return self.list(request)
+
+
 	# override default 'list' APIView method to get list of FoodSpots
 	def list(self, request):
 	 	"""

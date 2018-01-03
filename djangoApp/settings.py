@@ -94,7 +94,7 @@ WSGI_APPLICATION = 'djangoApp.wsgi.application'
 
 DATABASES = {
      'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'ENGINE': 'django.db.backends.mysql',
         'NAME': 'foodspot',
         'USER': 'root',
         'PASSWORD': '',

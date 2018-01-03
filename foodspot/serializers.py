@@ -1,6 +1,8 @@
 from django.utils import timezone
 from django.conf import settings
 from rest_framework import serializers
+from rest_framework.validators import UniqueValidator
+
 from models import (
 		User, 
 		Location, 
@@ -12,13 +14,14 @@ from models import (
 
 # from django.contrib.gis.geos import Point
 
-
+# for POST requests
 class UserSerializer(serializers.ModelSerializer):
 	numFoodSpots = serializers.SerializerMethodField()
+	email = serializers.EmailField(validators=[UniqueValidator(queryset=User.objects.all())])
 	class Meta:
 		model = User
-		fields = ('username', 'email', 'password', 'credits', 'numFoodSpots')
-		extra_kwargs = {'password' : {'write_only' : True }}
+		fields = ('id','username', 'email', 'password', 'numFoodSpots', 'fullName')
+		extra_kwargs = {'password' : {'write_only' : True }, 'fullName' : {'required' : True } , 'email' : { 'required' : True }}
 
 	def get_numFoodSpots(self, instance):
 		return FoodSpot.objects.filter(owner = instance).count()
@@ -26,7 +29,8 @@ class UserSerializer(serializers.ModelSerializer):
 	def create(self, validated_data):
 		user = User(
 			email = validated_data['email'],
-			username = validated_data['username']
+			username = validated_data['username'],
+			fullName = validated_data['fullName']
 		)
 		user.set_password(validated_data['password'])
 		user.save()
@@ -37,14 +41,17 @@ class UserSerializer(serializers.ModelSerializer):
 class UserSerializerForPut(serializers.ModelSerializer):
 	class Meta:
 		model = User
-		fields = ('email', 'password')
+		fields = ('id','email', 'password')
 		extra_kwargs = {'password' : {'write_only' : True }}
 
 # user serializer class for public GET requests, excludes email and password field
 class UserSerializerForPublicGet(serializers.ModelSerializer):
+	numFoodSpots = serializers.SerializerMethodField()
 	class Meta:
 		model = User
-		fields = ('username',)
+		fields = ('id', 'username', 'numFoodSpots', 'first_name', 'last_name')
+	def get_numFoodSpots(self, instance):
+		return FoodSpot.objects.filter(owner = instance).count()
 
 
 class LocationSerializer(serializers.ModelSerializer):
@@ -62,14 +69,14 @@ class FoodSpotCommentSerializer(serializers.ModelSerializer):
 		return timezone.localtime(instance.timestamp)
 
 class FoodSpotVoteSerializer(serializers.ModelSerializer):
-	# created_date_time = serializers.SerializerMethodField()
+	created_date_time = serializers.SerializerMethodField()
 	class Meta:
 		model = FoodSpotVote
 		read_only = ('owner', 'value')
 		extra_kwargs = {'value' : {'required' : True}, 'foodSpot' : {'required' : True}, 'owner' : {'required' : False} }
-	# def get_created_date_time(self, instance):
-	# 	print instance
-	# 	return timezone.localtime(instance.timestamp)
+
+	def get_created_date_time(self, instance):
+		return timezone.localtime(instance.timestamp)
 
 	def create(self, validated_data):	#validated_data has field 'owner' set by the save method.
 		return FoodSpotVote.objects.create(**validated_data)

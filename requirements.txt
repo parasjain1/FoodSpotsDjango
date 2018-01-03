@@ -8,3 +8,4 @@ django-braces
 tweepy
 textblob
 pillow
+pyfcm
