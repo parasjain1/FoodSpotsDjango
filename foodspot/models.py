@@ -9,6 +9,7 @@ from django.db.models.expressions import RawSQL
 
 import foodspot.helpers as helpers
 import foodspot.constants as constants
+import math
 
 
 # Create your models here.
@@ -28,6 +29,23 @@ class User(AbstractUser):
 	# gender = models.BooleanField(blank = True, null = True)
 	class Meta:
 		unique_together = ('email',)
+
+	def hasTravelled(self, lat, lng):
+		lastLocation = UserLocation.objects.filter(user = self).first()
+		lat = float(lat)
+		lng = float(lng)
+		if lastLocation is None:
+			UserLocation.objects.create(lat = lat, lng = lng, user = self)
+			return True
+		gcd = 6371 * math.acos(math.cos(math.radians(lastLocation.lat)) * math.cos(math.radians(lat))* math.cos(math.radians(lng) - math.radians(lastLocation.lng)) + math.sin(math.radians(lastLocation.lat)) * math.sin(math.radians(lat)))
+		if gcd > float(20):
+			lastLocation.lat = lat
+			lastLocation.lng = lng
+			lastLocation.save()
+			return True
+		else:
+			return False
+
 
 class LikeDislikeManager(models.Manager):
     use_for_related_fields = True

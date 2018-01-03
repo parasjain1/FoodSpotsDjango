@@ -69,7 +69,7 @@ class FoodSpotViewSet(viewsets.ModelViewSet):
 			queryset = queryset.filter(owner__username = username)
 		return queryset
 
-	@list_route(url_path='travel')
+	@list_route(url_path='travel', permission_classes=(IsAuthenticated,))
 	def travel(self, request):
 		errors = {}
 		lat = request.query_params.get('lat')
@@ -83,6 +83,9 @@ class FoodSpotViewSet(viewsets.ModelViewSet):
 			errors['firebaseId'] = 'firebaseId is required'
 		if len(errors) is not 0:
 			return Response(errors,status=status.HTTP_400_BAD_REQUEST)
+
+		if not request.user.hasTravelled(lat, lng):
+			return Response({'status' : 'not travelled' },status=status.HTTP_200_OK)
 
 		pushService = FCMNotification(api_key = constants.FCM_SERVER_KEY)
 		data = {
