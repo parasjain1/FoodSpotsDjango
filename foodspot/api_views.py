@@ -85,7 +85,7 @@ class FoodSpotViewSet(viewsets.ModelViewSet):
 			return Response(errors,status=status.HTTP_400_BAD_REQUEST)
 
 		if not request.user.hasTravelled(lat, lng):
-			return Response({'status' : 'not travelled' },status=status.HTTP_200_OK)
+			return Response({'detail' : 'user not travelled' },status=status.HTTP_200_OK)
 
 		pushService = FCMNotification(api_key = constants.FCM_SERVER_KEY)
 		data = {
@@ -95,7 +95,7 @@ class FoodSpotViewSet(viewsets.ModelViewSet):
 			"image" : "http://c8.alamy.com/comp/CEB75Y/vans-good-food-shop-in-middleton-street-llandrindod-wells-CEB75Y.jpg"
 		}
 		result = pushService.notify_single_device(registration_id = firebaseId, data_message = data)
-		return Response({'status' : 'done' },status=status.HTTP_200_OK)
+		return Response({'detail' : 'notification sent' },status=status.HTTP_200_OK)
 
 	# override default 'list' APIView method to get list of FoodSpots
 	def list(self, request):
