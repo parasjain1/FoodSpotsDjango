@@ -125,7 +125,7 @@ class FoodSpotManager(models.Manager):
 
 class FoodSpot(models.Model):
 	objects = FoodSpotManager()
-	owner = models.ForeignKey('User', on_delete = models.CASCADE)
+	owner = models.ForeignKey('User', on_delete = models.CASCADE, blank=True)
 	name = models.CharField(max_length = 100)
 	rating = models.FloatField(null = True, blank = True)
 	location = models.ForeignKey('Location', on_delete = models.CASCADE)
