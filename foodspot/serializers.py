@@ -93,7 +93,7 @@ class FoodSpotImageSerializer(serializers.ModelSerializer):
 
 class FoodSpotSerializer(serializers.ModelSerializer):
 	location = LocationSerializer()
-	owner = UserSerializerForPublicGet()
+	# owner = UserSerializerForPublicGet()
 	# since FoodSpot doesn't have a gallery field, we define a MethodField 'gallery' and fill it via the 'fill_gallery' serializer method
 	# method name defaults to 'get_gallery' if not specified 
 	gallery = serializers.SerializerMethodField('fill_gallery')
@@ -107,7 +107,7 @@ class FoodSpotSerializer(serializers.ModelSerializer):
 		model = FoodSpot
 		fields = '__all__'
 		read_only = ('location', 'approved')
-		extra_kwargs = { 'owner' : {'read_only' : True, 'required' : False}}
+		# extra_kwargs = { 'owner' : {'read_only' : True, 'required' : False}}
 
 	'''
 	 fill_gallery : method to fill gallery field during GET request
