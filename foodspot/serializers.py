@@ -42,14 +42,14 @@ class UserSerializerForPut(serializers.ModelSerializer):
 	class Meta:
 		model = User
 		fields = ('id','email', 'password')
-		extra_kwargs = {'password' : {'write_only' : True }}
+		extra_kwargs = {'password' : {'write_only' : True }, 'fullName' : {'required' : True } , 'email' : { 'required' : True }}
 
 # user serializer class for public GET requests, excludes email and password field
 class UserSerializerForPublicGet(serializers.ModelSerializer):
 	numFoodSpots = serializers.SerializerMethodField()
 	class Meta:
 		model = User
-		fields = ('id', 'username', 'numFoodSpots', 'first_name', 'last_name')
+		fields = ('id', 'username', 'numFoodSpots', 'fullName')
 	def get_numFoodSpots(self, instance):
 		return FoodSpot.objects.filter(owner = instance).count()
 
@@ -93,7 +93,7 @@ class FoodSpotImageSerializer(serializers.ModelSerializer):
 
 class FoodSpotSerializer(serializers.ModelSerializer):
 	location = LocationSerializer()
-	owner = UserSerializerForPublicGet()
+	# owner = UserSerializerForPublicGet()
 	# since FoodSpot doesn't have a gallery field, we define a MethodField 'gallery' and fill it via the 'fill_gallery' serializer method
 	# method name defaults to 'get_gallery' if not specified 
 	gallery = serializers.SerializerMethodField('fill_gallery')
@@ -107,7 +107,7 @@ class FoodSpotSerializer(serializers.ModelSerializer):
 		model = FoodSpot
 		fields = '__all__'
 		read_only = ('location', 'approved')
-		extra_kwargs = { 'owner' : {'read_only' : True}}
+		# extra_kwargs = { 'owner' : {'read_only' : True}}
 
 	'''
 	 fill_gallery : method to fill gallery field during GET request
@@ -148,7 +148,7 @@ class FoodSpotSerializer(serializers.ModelSerializer):
 
 		# for each uploaded image file, create a FoodSpotImage instance
 		for image in gallery:
-			FoodSpotImage.objects.create(foodSpot = foodSpot, image = image)
+			FoodSpotImage.objects.create(foodSpot = foodSpot, image = gallery[image])
 
 		return foodSpot
 

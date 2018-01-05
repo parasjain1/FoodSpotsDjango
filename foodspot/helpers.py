@@ -9,7 +9,9 @@ def PathAndRenameFile(object):
 		self.path = path
 	def __call__(self, instance, filename):
 		extension = filename.split('.')[-1]
-		filename = '{}.{}'.format(uuid4().hex, ext)
-		return os.path.join(path, filename)
+		filename = '{}.{}'.format(uuid4().hex, extension)
+		print self.path
+		print "Hello"
+		return os.path.join('foodspots', filename)
 
 	
