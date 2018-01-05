@@ -55,7 +55,7 @@ class UserViewSet(viewsets.ModelViewSet):
 class FoodSpotViewSet(viewsets.ModelViewSet):
 	queryset = FoodSpot.objects.all()
 	serializer_class = FoodSpotSerializer
-	permission_classes = (IsOwnerOrReadOnly,)
+	permission_classes = (IsOwnerOrReadOnly,IsAuthenticated)
 
 	#override perform_create method to pass current logged in user as owner of the entity
 	def perform_create(self, serializer):

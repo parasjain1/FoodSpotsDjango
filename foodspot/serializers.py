@@ -107,7 +107,11 @@ class FoodSpotSerializer(serializers.ModelSerializer):
 		model = FoodSpot
 		fields = '__all__'
 		read_only = ('location', 'approved')
+<<<<<<< HEAD
 		# extra_kwargs = { 'owner' : {'read_only' : True}}
+=======
+		# extra_kwargs = { 'owner' : {'read_only' : True, 'required' : False}}
+>>>>>>> c3fb6e09cd204e042b44f20af650c8e7daecf45c
 
 	'''
 	 fill_gallery : method to fill gallery field during GET request
