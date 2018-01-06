@@ -69,6 +69,10 @@ class FoodSpotViewSet(viewsets.ModelViewSet):
 			queryset = queryset.filter(owner__username = username)
 		return queryset
 
+	@list_route(url_path='search', permission_classes=(IsAuthenticated,))
+	def search(self, request):
+		return self.list(request)
+
 	@list_route(url_path='travel', permission_classes=(IsAuthenticated,))
 	def travel(self, request):
 		errors = {}
