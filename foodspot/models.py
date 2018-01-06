@@ -134,8 +134,12 @@ class FoodSpot(models.Model):
 	timestamp = models.DateTimeField(default = timezone.now, editable = False)
 	approved = models.BooleanField(default = False)
 	preApproved = models.BooleanField(default = False)
-	# openTime = models.
-	# closeTime = 
+	speciality = models.CharFied(max_length = 100, null = True, blank = True)
+	nonVeg = models.BooleanField(default = False)
+	veg = models.BooleanField(default = False)
+	ownerRating = models.CharField(max_length=20, null = True, blank = True)
+	openTime = models.TimeField(null = True, blank = True)
+	closeTime = models.TimeField(null = True, blank = True)
 
 	@staticmethod
 	def post_save(sender, **kwargs):
