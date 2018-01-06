@@ -105,9 +105,7 @@ class FoodSpotVoteSerializer(serializers.ModelSerializer):
 		vote, created = FoodSpotVote.objects.get_or_create( 
 			value=validated_data['value'], 
 			owner=validated_data['owner'], 
-			defaults={
-				'foodSpot': validated_data['foodSpot'], 
-			}
+			foodSpot=validated_data['foodSpot']
 		)
 		return vote
 		return FoodSpotVote.objects.create(**validated_data)
