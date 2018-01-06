@@ -87,6 +87,7 @@ class FoodSpotVoteSerializerForGet(serializers.ModelSerializer):
 class FoodSpotVoteSerializer(serializers.ModelSerializer):
 	created_date_time = serializers.SerializerMethodField()
 	class Meta:
+		fields = '__all__'
 		model = FoodSpotVote
 		read_only = ('owner', 'value')
 		extra_kwargs = {'value' : {'required' : True}, 'foodSpot' : {'required' : True}, 'owner' : {'required' : False} }
