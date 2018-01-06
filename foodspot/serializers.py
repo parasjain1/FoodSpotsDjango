@@ -62,7 +62,7 @@ class LocationSerializer(serializers.ModelSerializer):
 class FoodSpotCommentSerializer(serializers.ModelSerializer):
 	created_date_time = serializers.SerializerMethodField()
 	class Meta:
-		fields = __all__
+		fields = '__all__'
 		model = FoodSpotComment
 		read_only = ('owner')
 		extra_kwargs = {'text' : {'required' : True}, 'foodSpot' : {'required' : True} }
@@ -73,7 +73,7 @@ class FoodSpotVoteSerializer(serializers.ModelSerializer):
 	created_date_time = serializers.SerializerMethodField()
 	class Meta:
 		model = FoodSpotVote
-		fields = __all__
+		fields = '__all__'
 		read_only = ('owner', 'value')
 		extra_kwargs = {'value' : {'required' : True}, 'foodSpot' : {'required' : True}, 'owner' : {'required' : False} }
 
