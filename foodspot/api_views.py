@@ -22,6 +22,7 @@ from permissions import IsCreationOrIsAuthenticated, IsAuthenticated, IsOwnerOrR
 from rest_framework.response import Response
 from rest_framework.decorators import detail_route, list_route
 from rest_framework.authtoken.models import Token
+from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.exceptions import ValidationError
 from django.utils.translation import ugettext as _
 from pyfcm import FCMNotification
@@ -49,6 +50,11 @@ class UserViewSet(viewsets.ModelViewSet):
 		if self.request.method == 'DELETE':
 			return [permissions.IsAdminUser()]
 		return super(UserViewSet, self).get_permissions()
+
+	@list_route(url_path="by_token", permission_classes=(IsAuthenticated,))
+	def user_by_token(self, request):
+		serializer = self.get_serializer(request.user)
+		return Response(serializer.data)
 
 
 
@@ -148,4 +154,12 @@ class FoodSpotCommentViewSet(viewsets.ModelViewSet):
 
 	def perform_create(self, serializer):
 		serializer.save(owner = self.request.user)
+
+
+
+class CustomObtainAuthToken(ObtainAuthToken):
+    def post(self, request, *args, **kwargs):
+        response = super(CustomObtainAuthToken, self).post(request, *args, **kwargs)
+        token = Token.objects.get(key=response.data['token'])
+        return Response({'token': token.key, 'user': token.user})
 
