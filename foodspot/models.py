@@ -104,13 +104,13 @@ class FoodSpotVote(models.Model):
 		(-1, 'Dislike'),
 		(1, 'Like'))
 	value = models.SmallIntegerField(choices = choices, blank = True)
-	owner = models.ForeignKey('User', blank = True)
+	owner = models.ForeignKey('User', blank = True, null = True)
 	foodSpot = models.ForeignKey('FoodSpot', related_name='votes', blank = True)
 	timestamp = models.DateTimeField(default = timezone.now, editable = False)
 
 class FoodSpotComment(models.Model):
 	text = models.CharField(max_length=1000)
-	owner = models.ForeignKey('User', blank = True)
+	owner = models.ForeignKey('User', blank = True, default=User.objects.get(pk=1))
 	foodSpot = models.ForeignKey('FoodSpot', related_name='comments')	
 	timestamp = models.DateTimeField(default = timezone.now, editable = False)
 

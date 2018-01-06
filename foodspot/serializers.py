@@ -2,6 +2,8 @@ from django.utils import timezone
 from django.conf import settings
 from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
+from rest_framework.fields import CurrentUserDefault
+import rest_framework.validators as validators;
 
 from models import (
 		User, 
@@ -69,18 +71,44 @@ class FoodSpotCommentSerializer(serializers.ModelSerializer):
 	def get_created_date_time(self, instance):
 		return timezone.localtime(instance.timestamp)
 
-class FoodSpotVoteSerializer(serializers.ModelSerializer):
+
+# for public GET
+class FoodSpotVoteSerializerForGet(serializers.ModelSerializer):
 	created_date_time = serializers.SerializerMethodField()
 	class Meta:
 		model = FoodSpotVote
 		fields = '__all__'
 		read_only = ('owner', 'value')
+
+	def get_created_date_time(self, instance):
+		return timezone.localtime(instance.timestamp)
+
+# for POST (create)
+class FoodSpotVoteSerializer(serializers.ModelSerializer):
+	created_date_time = serializers.SerializerMethodField()
+	class Meta:
+		model = FoodSpotVote
+		read_only = ('owner', 'value')
 		extra_kwargs = {'value' : {'required' : True}, 'foodSpot' : {'required' : True}, 'owner' : {'required' : False} }
+
+	def run_validators(self, value):
+		for val in self.validators:
+			if isinstance(val, validators.UniqueTogetherValidator):
+				self.validators.remove(val)
+		super(FoodSpotVoteSerializer, self).run_validators(value)
 
 	def get_created_date_time(self, instance):
 		return timezone.localtime(instance.timestamp)
 
 	def create(self, validated_data):	#validated_data has field 'owner' set by the save method.
+		vote, created = FoodSpotVote.objects.get_or_create( 
+			value=validated_data['value'], 
+			owner=validated_data['owner'], 
+			defaults={
+				'foodSpot': validated_data['foodSpot'], 
+			}
+		)
+		return vote
 		return FoodSpotVote.objects.create(**validated_data)
 
 class FoodSpotImageSerializer(serializers.ModelSerializer):
@@ -105,6 +133,7 @@ class FoodSpotSerializer(serializers.ModelSerializer):
 	numDislikes = serializers.SerializerMethodField()
 	comments = serializers.SerializerMethodField()
 	created_date_time = serializers.SerializerMethodField()
+	userLiked = serializers.SerializerMethodField()
 	class Meta:
 		model = FoodSpot
 		fields = '__all__'
@@ -115,14 +144,18 @@ class FoodSpotSerializer(serializers.ModelSerializer):
 	 fill_gallery : method to fill gallery field during GET request
 	 Return : returns serialized list of FoodSpotImage instances
  	'''
+
+ 	def get_userLiked(self, instance):
+ 		return [FoodSpotVoteSerializerForGet(foodspot).data for foodspot in instance.votes.filter(owner = self.context.get('request', None).user)]
+
 	def fill_gallery(self, instance):
 		return [FoodSpotImageSerializer(foodSpotImage).data for foodSpotImage in instance.gallery.all()]
 
 	def get_recentLikes(self, instance):
-		return [FoodSpotVoteSerializer(foodSpotVote).data for foodSpotVote in instance.votes.filter(value = 1).order_by('-id')]
+		return [FoodSpotVoteSerializerForGet(foodSpotVote).data for foodSpotVote in instance.votes.filter(value = 1).order_by('-id')]
 
 	def get_recentDislikes(self, instance):
-		return [FoodSpotVoteSerializer(foodSpotVote).data for foodSpotVote in instance.votes.filter(value = -1).order_by('-id')]
+		return [FoodSpotVoteSerializerForGet(foodSpotVote).data for foodSpotVote in instance.votes.filter(value = -1).order_by('-id')]
 
 	def get_numLikes(self, instance):
 		return instance.votes.filter(value = 1).count()
